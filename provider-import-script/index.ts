@@ -1,3 +1,4 @@
-import { getProvidersFromFile } from './utils';
+import { getOrganization } from './utils/healthie';
+import { getProvidersFromCsv } from './utils/providers';
 
-getProvidersFromFile().then(console.log)
+getProvidersFromCsv().then(console.log).then(getOrganization).then(console.log)
