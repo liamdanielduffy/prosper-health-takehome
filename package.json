@@ -3,12 +3,17 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.11.16",
+    "@types/uuid": "^9.0.8",
     "bun-types": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "csv-parser": "^3.0.0"
+    "csv-parser": "^3.0.0",
+    "lodash": "^4.17.21",
+    "uuid": "^9.0.1"
   }
 }

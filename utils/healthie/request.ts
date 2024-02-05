@@ -1,6 +1,6 @@
-import { getEnv } from "./env"
+import { getEnv } from "../env"
 
-async function sendRequest<Response>(query: string): Promise<Response> {
+export async function request<Response>(query: string): Promise<Response> {
   const res = await fetch(getEnv().HEALTHIE_GRAPHQL_ENDPOINT, {
     method: 'POST',
     headers: {
@@ -12,16 +12,4 @@ async function sendRequest<Response>(query: string): Promise<Response> {
   })
   const resBody = await res.json()
   return resBody as Response
-}
-
-interface OrganizationQuery {
-  data: {
-    organization: {
-      id: string
-    }
-  }
-}
-
-export async function getOrganization() {
-  return sendRequest<OrganizationQuery>(`{ organization { id } }`)
 }

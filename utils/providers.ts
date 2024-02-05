@@ -3,22 +3,26 @@ import path from 'path';
 import csv from 'csv-parser';
 
 export interface RawProviderData {
-  first_name: string,
-  last_name: string,
-  states_licensed: string,
-  accepted_insurances: string,
-  psypact: string,
-  biography: string,
+  first_name: string
+  last_name: string
+  states_licensed: string
+  clinician_type: string
+  accepted_insurances: string
+  email: string
+  psypact: string
+  biography: string
   gender: string
 }
 
 export interface Provider {
-  first_name: string,
-  last_name: string,
-  states_licensed: string[],
+  first_name: string
+  last_name: string
+  states_licensed: string[]
+  clinician_type: string
   accepted_insurances: string[]
-  psypact: boolean,
-  biography: string,
+  email: string
+  psypact: boolean
+  biography: string
   gender: string
 }
 
@@ -40,10 +44,10 @@ function parseProviderData(data: RawProviderData): Provider {
     ...data,
     states_licensed: data.states_licensed.split(';'),
     accepted_insurances: data.accepted_insurances.split(';'),
-    psypact: Boolean(data.psypact)
+    psypact: data.psypact === 'True' ? true : false
   }
 }
 
-export async function getProvidersFromCsv(): Promise<Provider[]> {
-  return readCsvFile<RawProviderData, Provider>('clinical_roster.csv', parseProviderData)
+export async function getProviders(): Promise<Provider[]> {
+  return readCsvFile<RawProviderData, Provider>('data/clinical_roster.csv', parseProviderData)
 }
