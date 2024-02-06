@@ -3,8 +3,8 @@ import { addTagsToUser } from '@/healthie-api/utils/addTagsToUser';
 import { createOrganizationMembership } from '@/healthie-api/utils/createOrganizationMembership';
 import { createTag } from '@/healthie-api/utils/createTag';
 import { removeStatesFromUser } from '@/healthie-api/utils/removeStatesFromUser';
-import { HealthieTag, HealthieUser } from '@/healthie-api/types';
-import { compact, flatten, uniq, Dictionary, difference } from 'lodash'
+import { HealthieOrganization, HealthieTag, HealthieUser } from '@/healthie-api/types';
+import { compact, flatten, uniq, Dictionary, difference, keyBy } from 'lodash'
 import { readCsvFile } from '@/utils/csv';
 import { Provider, RawProviderData } from './types';
 import { PROVIDERS_DATA_FILE_PATH, PSYPACT_TAG_NAME } from './constants';
@@ -89,4 +89,31 @@ export async function removeStatesFromUsers(users: HealthieUser[]) {
   })
   const updatedUsers = compact(await Promise.all(requests))
   return updatedUsers
+}
+
+export async function mergeProvidersWithOrgUsers(organization: HealthieOrganization, providers: Provider[]): Promise<HealthieUser[]> {
+  const memberships = organization.organization_memberships
+  const providersByEmail = keyBy(providers, 'email')
+  const importedUsers = memberships.map(m => m.user).filter(u => providersByEmail[u.email])
+  const importedUsersByEmail = keyBy(importedUsers, 'email')
+  const providersToImport = providers.filter(p => !importedUsersByEmail[p.email])
+  const newUsers = await createUsersFromProviders(providersToImport, organization.id)
+  const users = [...importedUsers, ...newUsers]
+  return users
+}
+
+export async function tagUsers(organization: HealthieOrganization, providers: Provider[], usersByEmail: Dictionary<HealthieUser>) {
+  const existingTags = organization.tags
+  const newClinicianTypeTags = await createTagsForClinicianTypes(providers)
+  const newInsuranceTags = await createTagsForInsurances(providers)
+  const psypacTag = await createPsypacTag()
+
+  const allTags = [
+    ...(psypacTag ? [psypacTag] : []),
+    ...existingTags,
+    ...newClinicianTypeTags,
+    ...newInsuranceTags
+  ]
+  const tagsByName = keyBy(allTags, 'name')
+  await applyTagsToProviders(providers, tagsByName, usersByEmail)
 }

@@ -1,16 +1,9 @@
-import { HealthieTag, HealthieUser } from '../types'
+import { HealthieOrganization } from '../types'
 import { sendGraphQLRequest } from './sendGraphQLRequest'
 
 type Response = {
   data: {
-    organization: {
-      id: string,
-      tags: HealthieTag[]
-      organization_memberships: {
-        id: string,
-        user: HealthieUser
-      }[]
-    }
+    organization: HealthieOrganization
   }
 }
 

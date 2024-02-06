@@ -3,6 +3,15 @@ export interface HealthieStateLicense {
   state: string
 }
 
+export interface HealthieOrganization {
+  id: string,
+  tags: HealthieTag[]
+  organization_memberships: {
+    id: string,
+    user: HealthieUser
+  }[]
+}
+
 export interface HealthieUser {
   id: string,
   email: string,
