@@ -1,4 +1,4 @@
-import { request } from "../request"
+import { sendGraphQLRequest } from "./sendGraphQLRequest"
 import { HealthieUser } from "../types"
 
 type Response = {
@@ -40,6 +40,6 @@ export async function createOrganizationMembership(
       }
     }
   `
-  const res = await request<Response>(query)
+  const res = await sendGraphQLRequest<Response>(query)
   return res.data.createOrganizationMembership.organizationMembership
 }

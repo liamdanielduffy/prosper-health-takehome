@@ -1,26 +1,5 @@
-import { request } from '../request'
-import { HealthieTag, HealthieUser } from '../types'
-
-/*
-{
-  "data": {
-    "bulkApply": {
-      "tags": [
-        {
-          "id": "2096",
-          "name": "testTag",
-          "tagged_users": [
-            {
-              "id": "862720",
-              "email": "test@test.com"
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-*/
+import { HealthieTag, HealthieUser } from "../types"
+import { sendGraphQLRequest } from "./sendGraphQLRequest"
 
 interface TagWithUsers extends HealthieTag {
   tagged_users: HealthieUser[]
@@ -60,6 +39,6 @@ export async function addTagsToUser(tagIds: string[], userId: string) {
       }
     }
   `
-  const res = await request<Response>(query)
+  const res = await sendGraphQLRequest<Response>(query)
   return res.data.bulkApply.tags
 }

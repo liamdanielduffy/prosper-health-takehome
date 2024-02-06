@@ -1,5 +1,5 @@
-import { request } from "../request"
 import { HealthieTag, HealthieUser } from '../types'
+import { sendGraphQLRequest } from './sendGraphQLRequest'
 
 type Response = {
   data: {
@@ -15,7 +15,7 @@ type Response = {
 }
 
 export async function getOrganization() {
-  const res = await request<Response>(`
+  const res = await sendGraphQLRequest<Response>(`
     {
       organization {
         id

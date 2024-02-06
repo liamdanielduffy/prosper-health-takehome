@@ -1,5 +1,5 @@
-import { request } from "../request"
 import { HealthieTag } from "../types"
+import { sendGraphQLRequest } from "./sendGraphQLRequest"
 
 type Response = {
   data: {
@@ -22,6 +22,6 @@ export async function createTag(name: string) {
       }
     }
   `
-  const res = await request<Response>(query)
+  const res = await sendGraphQLRequest<Response>(query)
   return res.data.createTag.tag
 }

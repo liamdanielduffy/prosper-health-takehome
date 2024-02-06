@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
@@ -15,6 +17,12 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
+    "baseUrl": ".", // Set base URL to current directory
+    "paths": {
+      "@/*": [
+        "./*"
+      ] // Resolve paths starting with @/ from root
+    },
     "types": [
       "bun-types" // add Bun global
     ]

@@ -11,6 +11,7 @@ export interface HealthieUser {
   metadata: string
   state_licenses: HealthieStateLicense[]
 }
+
 export interface HealthieTag {
   id: string,
   name: string

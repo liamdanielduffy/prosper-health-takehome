@@ -1,6 +1,5 @@
-import { stringifyWithEscapedQuotes } from "../../json"
-import { request } from "../request"
 import { HealthieUser } from "../types"
+import { sendGraphQLRequest } from "./sendGraphQLRequest"
 
 type Response = {
   data: {
@@ -10,14 +9,13 @@ type Response = {
   }
 }
 
-export async function addStatesAndMetadataToUser(states: string[], metadata: Record<string, string>, userId: string) {
-  const stateLicenses = states.map(state => `{ state: "${state}"}`).join(',')
+export async function removeStatesFromUser(user: HealthieUser) {
+  const stateLicenses = user.state_licenses.map(l => `{ state: "${l.state}", id: "${l.id}", _destroy: true }`).join(',')
   const query = `
     mutation {
       updateOrganizationMember(input: {
-        id: "${userId}"
+        id: "${user.id}"
         state_licenses: [ ${stateLicenses} ]
-        metadata: "${stringifyWithEscapedQuotes(metadata)}"
       }) {
         user {
           id
@@ -33,6 +31,6 @@ export async function addStatesAndMetadataToUser(states: string[], metadata: Rec
       }
     }
   `
-  const res = await request<Response>(query)
+  const res = await sendGraphQLRequest<Response>(query)
   return res.data.updateOrganizationMember.user
 }

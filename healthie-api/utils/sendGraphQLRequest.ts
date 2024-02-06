@@ -1,6 +1,6 @@
-import { getEnv } from "../env"
+import { getEnv } from "@/utils/env"
 
-export async function request<Response>(query: string): Promise<Response> {
+export async function sendGraphQLRequest<Response>(query: string): Promise<Response> {
   const res = await fetch(getEnv().HEALTHIE_GRAPHQL_ENDPOINT, {
     method: 'POST',
     headers: {
