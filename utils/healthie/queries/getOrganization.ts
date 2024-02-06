@@ -30,6 +30,11 @@ export async function getOrganization() {
             first_name
             last_name
             email
+            metadata
+            state_licenses {
+              id
+              state
+            }
           }
         }
       }

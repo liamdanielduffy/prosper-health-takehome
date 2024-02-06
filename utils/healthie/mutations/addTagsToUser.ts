@@ -22,14 +22,14 @@ import { HealthieTag, HealthieUser } from '../types'
 }
 */
 
-interface TagWithUser extends HealthieTag {
+interface TagWithUsers extends HealthieTag {
   tagged_users: HealthieUser[]
 }
 
 type Response = {
   data: {
     bulkApply: {
-      tags: TagWithUser[]
+      tags: TagWithUsers[]
     }
   }
 }
@@ -50,6 +50,11 @@ export async function addTagsToUser(tagIds: string[], userId: string) {
             first_name
             last_name
             email
+            metadata
+            state_licenses {
+              id
+              state
+            }
           }
         }
       }
