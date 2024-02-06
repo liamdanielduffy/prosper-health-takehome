@@ -1,9 +1,9 @@
-import { addStatesAndMetadataToUser } from '@/healthie-api/utils/addStatesAndMetadataToUser';
-import { addTagsToUser } from '@/healthie-api/utils/addTagsToUser';
-import { createOrganizationMembership } from '@/healthie-api/utils/createOrganizationMembership';
-import { createTag } from '@/healthie-api/utils/createTag';
-import { removeStatesFromUser } from '@/healthie-api/utils/removeStatesFromUser';
-import { HealthieOrganization, HealthieTag, HealthieUser } from '@/healthie-api/types';
+import { addStatesAndMetadataToUser } from '@/services/healthie-api/utils/addStatesAndMetadataToUser';
+import { addTagsToUser } from '@/services/healthie-api/utils/addTagsToUser';
+import { createOrganizationMembership } from '@/services/healthie-api/utils/createOrganizationMembership';
+import { createTag } from '@/services/healthie-api/utils/createTag';
+import { removeStatesFromUser } from '@/services/healthie-api/utils/removeStatesFromUser';
+import { HealthieOrganization, HealthieTag, HealthieUser } from '@/services/healthie-api/types';
 import { compact, flatten, uniq, Dictionary, difference, keyBy } from 'lodash'
 import { readCsvFile } from '@/utils/csv';
 import { Provider, RawProviderData } from './types';

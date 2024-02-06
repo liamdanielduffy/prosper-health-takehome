@@ -1,6 +1,6 @@
 import { keyBy } from "lodash"
 import { addStatesAndMetadataToUsers, applyTagsToProviders, createPsypacTag, createTagsForClinicianTypes, createTagsForInsurances, createUsersFromProviders, getProviders, mergeProvidersWithOrgUsers, tagUsers } from "./utils"
-import { getOrganization } from "@/healthie-api/utils/getOrganization"
+import { getOrganization } from "@/services/healthie-api/utils/getOrganization"
 
 (async function () {
 
