@@ -1,10 +1,18 @@
-import { json } from "@remix-run/node";
+import { LoaderFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { getClientSummary, getProviders, getRandomClient } from "../utils";
+import { getClientSummary, getProviders, getRandomClient, getSpecificClient } from "../utils";
 import { ClientSummary, Client, ProviderWithCost } from "../types";
 
-export const loader = async () => {
-  const client = await getRandomClient()
+export const loader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url);
+  const userNumParam = url.searchParams.get("userNum");
+  const userNum = userNumParam ? parseInt(userNumParam) : null
+  let client
+  if (userNum) {
+    client = await getSpecificClient(userNum) ?? await getRandomClient()
+  } else {
+    client = await getRandomClient()
+  }
   if (!client) {
     throw new Response("Not Found", { status: 404 });
   }

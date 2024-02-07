@@ -97,6 +97,17 @@ export async function getRandomClient(): Promise<Client | undefined> {
   return client
 }
 
+export async function getSpecificClient(clientNumber: number): Promise<Client | undefined> {
+  const clientIndex = clientNumber - 1
+  const allClients = await readCsvFile<Client, Client>('data/prospective_clients.csv', row => row)
+  const maxIndex = allClients.length - 1
+  if (clientIndex > maxIndex) {
+    return undefined
+  }
+  return allClients[clientIndex]
+}
+
+
 export async function getProviders(client: Client): Promise<ProviderWithCost[]> {
   const users = await getUsers()
   const providersFromApi = users.map(u => getProviderFromUser(u))
