@@ -35,6 +35,9 @@ export async function createOrganizationMembership(
               id
               state
             }
+            active_tags {
+              name
+            }
           }
         }
       }

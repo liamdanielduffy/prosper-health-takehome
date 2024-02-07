@@ -1,18 +1,18 @@
-import { keyBy } from "lodash"
-import { addStatesAndMetadataToUsers, applyTagsToProviders, createPsypacTag, createTagsForClinicianTypes, createTagsForInsurances, createUsersFromProviders, getProviders, mergeProvidersWithOrgUsers, tagUsers } from "./utils"
+import _ from "lodash"
+import { addStatesAndMetadataToUsers, getProvidersFromCsv, mergeProvidersWithOrgUsers, tagUsers } from "./utils"
 import { getOrganization } from "@/services/healthie-api/utils/getOrganization"
 
 (async function () {
 
   console.log('reading providers...')
-  const providers = await getProviders()
+  const providers = await getProvidersFromCsv()
 
   console.log('fetching organization...')
   const organization = await getOrganization()
 
   console.log('importing providers...')
   const users = await mergeProvidersWithOrgUsers(organization, providers)
-  const usersByEmail = keyBy(users, 'email')
+  const usersByEmail = _.keyBy(users, 'email')
 
   console.log('tagging users...')
   await tagUsers(organization, providers, usersByEmail)

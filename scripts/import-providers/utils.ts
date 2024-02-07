@@ -1,10 +1,10 @@
 import { addStatesAndMetadataToUser } from '@/services/healthie-api/utils/addStatesAndMetadataToUser';
-import { addTagsToUser } from '@/services/healthie-api/utils/addTagsToUser';
+import { HealthieTagWithUsers, addTagsToUser } from '@/services/healthie-api/utils/addTagsToUser';
 import { createOrganizationMembership } from '@/services/healthie-api/utils/createOrganizationMembership';
 import { createTag } from '@/services/healthie-api/utils/createTag';
 import { removeStatesFromUser } from '@/services/healthie-api/utils/removeStatesFromUser';
 import { HealthieOrganization, HealthieTag, HealthieUser } from '@/services/healthie-api/types';
-import { compact, flatten, uniq, Dictionary, difference, keyBy } from 'lodash'
+import _ from 'lodash'
 import { readCsvFile } from '@/utils/csv';
 import { Provider, RawProviderData } from './types';
 import { PROVIDERS_DATA_FILE_PATH, PSYPACT_TAG_NAME } from './constants';
@@ -18,28 +18,28 @@ function parseProviderData(data: RawProviderData): Provider {
   }
 }
 
-export async function getProviders(): Promise<Provider[]> {
+export async function getProvidersFromCsv(): Promise<Provider[]> {
   return readCsvFile<RawProviderData, Provider>(PROVIDERS_DATA_FILE_PATH, parseProviderData)
 }
 
 export async function createUsersFromProviders(providers: Provider[], organizationId: string) {
   const requests = providers.map(p => createOrganizationMembership(p, organizationId))
-  const memberships = compact(await Promise.all(requests))
+  const memberships = _.compact(await Promise.all(requests))
   const users = memberships.map(m => m.user)
   return users
 }
 
 export async function createTagsForClinicianTypes(providers: Provider[]) {
-  const clinicianTypes = uniq(providers.map(p => p.clinician_type))
+  const clinicianTypes = _.uniq(providers.map(p => p.clinician_type))
   const requests = clinicianTypes.map(t => createTag(t))
-  const tags = compact(await Promise.all(requests))
+  const tags = _.compact(await Promise.all(requests))
   return tags
 }
 
 export async function createTagsForInsurances(providers: Provider[]) {
-  const insurances = uniq(flatten(providers.map(p => p.accepted_insurances)))
+  const insurances = _.uniq(_.flatten(providers.map(p => p.accepted_insurances)))
   const requests = insurances.map(t => createTag(t))
-  const tags = compact(await Promise.all(requests))
+  const tags = _.compact(await Promise.all(requests))
   return tags
 }
 
@@ -47,9 +47,9 @@ export async function createPsypacTag() {
   return createTag(PSYPACT_TAG_NAME)
 }
 
-export function getTagsForProvider(provider: Provider, tagsByName: Dictionary<HealthieTag>) {
+export function getTagsForProvider(provider: Provider, tagsByName: _.Dictionary<HealthieTag>) {
   const clinicianTypeTag = tagsByName[provider.clinician_type]
-  const insuranceTags = compact(provider.accepted_insurances.map(ins => tagsByName[ins]))
+  const insuranceTags = _.compact(provider.accepted_insurances.map(ins => tagsByName[ins]))
   const psypactTag = provider.psypact ? tagsByName[PSYPACT_TAG_NAME] : null
   const tags = insuranceTags
   if (clinicianTypeTag) {
@@ -61,25 +61,25 @@ export function getTagsForProvider(provider: Provider, tagsByName: Dictionary<He
   return tags
 }
 
-export async function applyTagsToProviders(providers: Provider[], tagsByName: Dictionary<HealthieTag>, usersByEmail: Dictionary<HealthieUser>): Promise<TagWithUsers[][]> {
+export async function applyTagsToProviders(providers: Provider[], tagsByName: _.Dictionary<HealthieTag>, usersByEmail: _.Dictionary<HealthieUser>) {
   const requests = providers.map(p => {
     const tagIds = getTagsForProvider(p, tagsByName).map(t => t.id)
     const userId = usersByEmail[p.email].id
     return addTagsToUser(tagIds, userId)
   })
-  const tagsWithUsers = compact(await Promise.all(requests))
+  const tagsWithUsers = _.compact(await Promise.all(requests))
   return tagsWithUsers
 }
 
-export async function addStatesAndMetadataToUsers(providers: Provider[], usersByEmail: Dictionary<HealthieUser>) {
+export async function addStatesAndMetadataToUsers(providers: Provider[], usersByEmail: _.Dictionary<HealthieUser>): Promise<HealthieTagWithUsers[][]> {
   const requests = providers.map(p => {
     const providerStates = p.states_licensed
     const user = usersByEmail[p.email]
     const userStates = user.state_licenses.map(s => s.state)
-    const statesToAdd = difference(providerStates, userStates)
+    const statesToAdd = _.difference(providerStates, userStates)
     return addStatesAndMetadataToUser(statesToAdd, { gender: p.gender, biography: p.biography }, user.id)
   })
-  const usersWithStates = compact(await Promise.all(requests))
+  const usersWithStates = _.compact(await Promise.all(requests))
   return usersWithStates
 }
 
@@ -87,22 +87,22 @@ export async function removeStatesFromUsers(users: HealthieUser[]) {
   const requests = users.map(u => {
     return removeStatesFromUser(u)
   })
-  const updatedUsers = compact(await Promise.all(requests))
+  const updatedUsers = _.compact(await Promise.all(requests))
   return updatedUsers
 }
 
 export async function mergeProvidersWithOrgUsers(organization: HealthieOrganization, providers: Provider[]): Promise<HealthieUser[]> {
   const memberships = organization.organization_memberships
-  const providersByEmail = keyBy(providers, 'email')
+  const providersByEmail = _.keyBy(providers, 'email')
   const importedUsers = memberships.map(m => m.user).filter(u => providersByEmail[u.email])
-  const importedUsersByEmail = keyBy(importedUsers, 'email')
+  const importedUsersByEmail = _.keyBy(importedUsers, 'email')
   const providersToImport = providers.filter(p => !importedUsersByEmail[p.email])
   const newUsers = await createUsersFromProviders(providersToImport, organization.id)
   const users = [...importedUsers, ...newUsers]
   return users
 }
 
-export async function tagUsers(organization: HealthieOrganization, providers: Provider[], usersByEmail: Dictionary<HealthieUser>) {
+export async function tagUsers(organization: HealthieOrganization, providers: Provider[], usersByEmail: _.Dictionary<HealthieUser>) {
   const existingTags = organization.tags
   const newClinicianTypeTags = await createTagsForClinicianTypes(providers)
   const newInsuranceTags = await createTagsForInsurances(providers)
@@ -114,6 +114,6 @@ export async function tagUsers(organization: HealthieOrganization, providers: Pr
     ...newClinicianTypeTags,
     ...newInsuranceTags
   ]
-  const tagsByName = keyBy(allTags, 'name')
+  const tagsByName = _.keyBy(allTags, 'name')
   await applyTagsToProviders(providers, tagsByName, usersByEmail)
 }

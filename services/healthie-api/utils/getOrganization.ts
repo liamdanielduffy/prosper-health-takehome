@@ -28,6 +28,9 @@ export async function getOrganization() {
               id
               state
             }
+            active_tags {
+              name
+            }
           }
         }
       }

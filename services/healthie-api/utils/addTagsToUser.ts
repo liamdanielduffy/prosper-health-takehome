@@ -1,14 +1,14 @@
 import { HealthieTag, HealthieUser } from "../types"
 import { sendGraphQLRequest } from "./sendGraphQLRequest"
 
-interface TagWithUsers extends HealthieTag {
+export interface HealthieTagWithUsers extends HealthieTag {
   tagged_users: HealthieUser[]
 }
 
 type Response = {
   data: {
     bulkApply: {
-      tags: TagWithUsers[]
+      tags: HealthieTagWithUsers[]
     }
   }
 }
@@ -33,6 +33,9 @@ export async function addTagsToUser(tagIds: string[], userId: string) {
             state_licenses {
               id
               state
+            }
+            active_tags {
+              name
             }
           }
         }

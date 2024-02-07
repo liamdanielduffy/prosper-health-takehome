@@ -7,7 +7,7 @@ export function readCsvFile<RawRowData, ParsedRowData>(
   parseRow: (row: RawRowData) => ParsedRowData,
 ): Promise<ParsedRowData[]> {
   return new Promise((resolve) => {
-    let parsedRows: ParsedRowData[] = []
+    const parsedRows: ParsedRowData[] = []
     fs.createReadStream(path.resolve(process.cwd(), csvFilePath))
       .pipe(csv())
       .on('data', (row: RawRowData) => parsedRows.push(parseRow(row)))

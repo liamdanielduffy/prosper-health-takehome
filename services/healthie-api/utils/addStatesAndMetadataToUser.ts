@@ -29,6 +29,9 @@ export async function addStatesAndMetadataToUser(states: string[], metadata: Rec
             id
             state
           }
+          active_tags {
+            name
+          }
         }
       }
     }

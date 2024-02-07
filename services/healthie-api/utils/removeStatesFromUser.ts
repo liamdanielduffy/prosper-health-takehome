@@ -27,6 +27,9 @@ export async function removeStatesFromUser(user: HealthieUser) {
             id
             state
           }
+          active_tags {
+            name
+          }
         }
       }
     }
