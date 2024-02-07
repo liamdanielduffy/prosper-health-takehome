@@ -83,7 +83,7 @@ async function getUsers(): Promise<HealthieUserWithMetadata[]> {
   const organization = await getOrganization()
   const providersFromCsv = await getProvidersFromCsv()
 
-  //filter out users
+  //filter out test users
   const realUsers = organization.organization_memberships
     .map(m => m.user)
     .filter(u =>
@@ -107,7 +107,6 @@ export async function getSpecificClient(clientNumber: number): Promise<Client | 
   }
   return allClients[clientIndex]
 }
-
 
 export async function getProviders(client: Client): Promise<ProviderWithCost[]> {
   const users = await getUsers()
