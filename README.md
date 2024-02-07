@@ -78,7 +78,7 @@ query {
 
 ### Misc. Notes + Follow-Ups
 
-- Given more time, I'd write integration tests for loading and displaying provider information, along with unit tests for the many small functions used in both serverside logic and the improt script. 
+- Given more time, I'd write integration tests for loading and displaying provider information, along with unit tests for the many small functions used in both serverside logic and the import script. 
 
 - For the sake of time, I skipped the bookings part of this challenge. However, I would have imported these for providers with the `bulkCreateAvailability` mutation.
 
