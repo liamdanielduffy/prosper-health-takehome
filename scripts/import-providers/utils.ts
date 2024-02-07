@@ -72,7 +72,7 @@ export async function applyTagsToProviders(providers: Provider[], tagsByName: _.
   return tagsWithUsers
 }
 
-export async function addStatesAndMetadataToUsers(providers: Provider[], usersByEmail: _.Dictionary<HealthieUser>): Promise<HealthieTagWithUsers[][]> {
+export async function addStatesAndMetadataToUsers(providers: Provider[], usersByEmail: _.Dictionary<HealthieUser>): Promise<HealthieUser[]> {
   const requests = providers.map(p => {
     const providerStates = p.states_licensed
     const user = usersByEmail[p.email]
