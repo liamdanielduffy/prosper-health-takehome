@@ -1,3 +1,31 @@
+### Repo + App Setup
+
+This repo was setup with Bun. 
+
+To install dependencies for both the script and the app, run:
+
+```
+bun install
+```
+
+Create a `.env` file at the root with the following values:
+```
+HEALTHIE_GRAPHQL_ENDPOINT="..."
+HEALTHIE_API_KEY="..."
+```
+
+To run the app locally:
+
+```
+bun dev
+```
+
+To run the script to import providers:
+
+```
+bun run import-providers
+```
+
 ### Part 1 Notes
 
 - The script for importing providers into Healthie lives in `scripts/import-providers/index.ts`
