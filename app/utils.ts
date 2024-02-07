@@ -4,8 +4,9 @@ import { Client, ClientSummary, HealthieUserWithMetadata, ProviderWithCost } fro
 import { Provider } from '@/scripts/import-providers/types'
 import { getOrganization } from "@/services/healthie-api/utils/getOrganization"
 import { getProvidersFromCsv } from "@/scripts/import-providers/utils"
-import { readCsvFile } from "@/utils/csv"
+import { parseCsvContents } from "@/utils/csv"
 import _ from "lodash"
+import { prospective_clients } from "@/data/prospective_clients"
 
 export function getClientSummary(client: Client): ClientSummary {
 
@@ -92,14 +93,14 @@ async function getUsers(): Promise<HealthieUserWithMetadata[]> {
 }
 
 export async function getRandomClient(): Promise<Client | undefined> {
-  const allClients = await readCsvFile<Client, Client>('data/prospective_clients.csv', row => row)
+  const allClients = await parseCsvContents<Client, Client>(prospective_clients, row => row)
   const client = _.sample(allClients)
   return client
 }
 
 export async function getSpecificClient(clientNumber: number): Promise<Client | undefined> {
   const clientIndex = clientNumber - 1
-  const allClients = await readCsvFile<Client, Client>('data/prospective_clients.csv', row => row)
+  const allClients = await parseCsvContents<Client, Client>(prospective_clients, row => row)
   const maxIndex = allClients.length - 1
   if (clientIndex > maxIndex) {
     return undefined

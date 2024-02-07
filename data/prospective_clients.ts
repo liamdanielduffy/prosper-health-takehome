@@ -1,4 +1,4 @@
-id,created_at,first_name,last_name,email,state,desired_service,insurance
+export const prospective_clients = `id,created_at,first_name,last_name,email,state,desired_service,insurance
 1,2024-02-01 21:59:51.317346+00,James,Barbee,linwood.dibbe@yahoo.com,FL,therapy,BCBS
 2,2024-02-01 22:00:19.545543+00,Monica,Lovell,kirk_yost1971@gmail.com,NY,assessment,BCBS
 3,2024-02-01 22:00:49.308214+00,Andrew,Davisson,zella.schmel@hotmail.com,NY,therapy,Other
@@ -98,4 +98,4 @@ id,created_at,first_name,last_name,email,state,desired_service,insurance
 97,2024-02-01 22:11:49.254638+00,Mike,Brown,user90@example.com,NV,therapy,Aetna
 98,2024-02-01 22:11:49.254638+00,John,Williams,user91@example.com,FL,assessment,Medicare
 99,2024-02-01 22:11:49.254638+00,Anna,Miller,user92@example.com,FL,therapy,Aetna
-100,2024-02-01 22:11:49.254638+00,Robert,Wilson,user93@example.com,AZ,therapy,Other
+100,2024-02-01 22:11:49.254638+00,Robert,Wilson,user93@example.com,AZ,therapy,Other`

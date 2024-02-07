@@ -5,9 +5,10 @@ import { createTag } from '@/services/healthie-api/utils/createTag';
 import { removeStatesFromUser } from '@/services/healthie-api/utils/removeStatesFromUser';
 import { HealthieOrganization, HealthieTag, HealthieUser } from '@/services/healthie-api/types';
 import _ from 'lodash'
-import { readCsvFile } from '@/utils/csv';
+import { parseCsvContents } from '@/utils/csv';
 import { Provider, RawProviderData } from './types';
-import { PROVIDERS_DATA_FILE_PATH, PSYPACT_TAG_NAME } from './constants';
+import { PSYPACT_TAG_NAME } from './constants';
+import { clinical_roster } from '@/data/clinical_roster';
 
 function parseProviderData(data: RawProviderData): Provider {
   return {
@@ -19,7 +20,7 @@ function parseProviderData(data: RawProviderData): Provider {
 }
 
 export async function getProvidersFromCsv(): Promise<Provider[]> {
-  return readCsvFile<RawProviderData, Provider>(PROVIDERS_DATA_FILE_PATH, parseProviderData)
+  return parseCsvContents<RawProviderData, Provider>(clinical_roster, parseProviderData)
 }
 
 export async function createUsersFromProviders(providers: Provider[], organizationId: string) {
