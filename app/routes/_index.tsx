@@ -94,7 +94,7 @@ export default function Index() {
       <ClientInfo {...client} />
       <h1 className="m-8 text-5xl font-extrabold text-center">Available Providers</h1>
       <div className="w-full flex flex-wrap max-w-5xl">
-        {providers.map(p => <ProviderInfo key={p.email} {...p} />)}
+        {providers.map((p: ProviderWithCost) => <ProviderInfo key={p.email} {...p} />)}
       </div>
     </div>
   );
