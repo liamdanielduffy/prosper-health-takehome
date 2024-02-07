@@ -38,7 +38,7 @@ bun run import-providers
 
 - To call the Healthie API, I wrote wrapper functions for specific queries + mutations that live in `services/healthie-api/utils`
 
-- I found that most Healthie API mutations were idempotent, so I wrote my script to rerun the same mutations each time it is run. There are some places I avoided sending mutations if I saw that the data had already been imported, but there are more places to optimize script performance. 
+- I found that most Healthie API mutations were idempotent, so I wrote my script to rerun the same mutations each time the script runs. There are some places I avoided sending mutations if I saw that the data had already been imported. There are still many places to optimize script performance by avoiding redundant API calls.
 
 - One annoying case of non-idempotency was the `state_licences` field on `updateOrganizationMember`. A `state_license` object in the input with the same `name` as an existing `state_license` object on an existing org member is appended to the `state_licenses` array for that org member, meaning that you can easily create duplicate licenses for the same state. Ideally, I could find a mutation that allows me to create `state_licenses` as separate objects in the API, then attach them to users by ID. However, I wasn't able to find a mutation like that.
 
@@ -77,6 +77,8 @@ query {
 ```
 
 ### Misc. Notes + Follow-Ups
+
+- Given more time, I'd write integration tests for loading and displaying provider information, along with unit tests for the many small functions used in both serverside logic and the improt script. 
 
 - For the sake of time, I skipped the bookings part of this challenge. However, I would have imported these for providers with the `bulkCreateAvailability` mutation.
 
