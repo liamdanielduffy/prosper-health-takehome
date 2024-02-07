@@ -15,7 +15,7 @@ function parseProviderData(data: RawProviderData): Provider {
     ...data,
     states_licensed: data.states_licensed.split(';'),
     accepted_insurances: data.accepted_insurances.split(';'),
-    psypact: data.psypact === 'True' ? true : false
+    psypact: data.psypact === 'True'
   }
 }
 
