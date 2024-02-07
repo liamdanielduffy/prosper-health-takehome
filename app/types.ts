@@ -5,12 +5,14 @@ export interface UserMetadata { gender: string, biography: string }
 
 export type HealthieUserWithMetadata = Omit<HealthieUser, 'metadata'> & { metadata: UserMetadata }
 
-export interface ClientConstraints {
+export interface ClientSummary {
   wantsAssessment: boolean,
   wantsTherapy: boolean,
   canUseInsurance: boolean,
   canReceiveTherapy: boolean,
-  canReceiveAssessment: boolean
+  canReceiveAssessment: boolean,
+  hasAcceptedInsurance: boolean,
+  locatedInSupportedState: boolean
 }
 
 export interface ProviderWithCost extends Provider {

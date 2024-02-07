@@ -1,4 +1,3 @@
-import { cssBundleHref } from "@remix-run/css-bundle";
 import type { LinksFunction } from "@remix-run/node";
 import {
   Links,
@@ -9,20 +8,23 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+import stylesheet from "@/app/tailwind.css"
+
 export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  { rel: "stylesheet", href: stylesheet },
 ];
+
 
 export default function App() {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="corporate">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="w-screen h-screen">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

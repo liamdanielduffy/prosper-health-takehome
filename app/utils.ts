@@ -1,19 +1,25 @@
 import { HealthieUser } from "@/services/healthie-api/types"
 import { ACCEPTED_INSURANCES, STATES_ALLOWING_THERAPY_AND_INSURANCE, STATES_DISALLOWING_ASSESSMENT, UNINSURED_ASSESSMENT_COST_IN_DOLLARS, UNINSURED_THERAPY_COST_IN_DOLLARS } from "./constants"
-import { Client, ClientConstraints, HealthieUserWithMetadata, ProviderWithCost } from "./types"
+import { Client, ClientSummary, HealthieUserWithMetadata, ProviderWithCost } from "./types"
 import { Provider } from '@/scripts/import-providers/types'
 import { getOrganization } from "@/services/healthie-api/utils/getOrganization"
 import { getProvidersFromCsv } from "@/scripts/import-providers/utils"
 import { readCsvFile } from "@/utils/csv"
 import _ from "lodash"
 
-function getClientConstraints(client: Client): ClientConstraints {
+export function getClientSummary(client: Client): ClientSummary {
+
+  const hasAcceptedInsurance = ACCEPTED_INSURANCES.includes(client.insurance)
+  const locatedInSupportedState = STATES_ALLOWING_THERAPY_AND_INSURANCE.includes(client.state)
+
   return {
     wantsAssessment: client.desired_service === 'assessment',
     wantsTherapy: client.desired_service === 'therapy',
-    canUseInsurance: STATES_ALLOWING_THERAPY_AND_INSURANCE.includes(client.state) && ACCEPTED_INSURANCES.includes(client.insurance),
+    canUseInsurance: locatedInSupportedState && hasAcceptedInsurance,
     canReceiveTherapy: STATES_ALLOWING_THERAPY_AND_INSURANCE.includes(client.state),
-    canReceiveAssessment: !STATES_DISALLOWING_ASSESSMENT.includes(client.state)
+    canReceiveAssessment: !STATES_DISALLOWING_ASSESSMENT.includes(client.state),
+    hasAcceptedInsurance,
+    locatedInSupportedState
   }
 }
 
@@ -29,19 +35,19 @@ function getUninsuredProviderCost(provider: Provider) {
 }
 
 function getProvidersForClient(providers: Provider[], client: Client) {
-  const constraints = getClientConstraints(client)
+  const clientSummary = getClientSummary(client)
   return providers.filter(p => {
     return (
-      (constraints.wantsAssessment && p.clinician_type === 'PSYCHOLOGIST')
-      || (constraints.wantsTherapy && p.clinician_type === 'THERAPIST')
+      (clientSummary.wantsAssessment && p.clinician_type === 'PSYCHOLOGIST')
+      || (clientSummary.wantsTherapy && p.clinician_type === 'THERAPIST')
     )
   })
 }
 
 function getProviderCostForClient(provider: Provider, client: Client): number {
-  const constraints = getClientConstraints(client)
+  const clientSummary = getClientSummary(client)
   const providerAcceptsClientInsurance = provider.accepted_insurances.includes(client.insurance)
-  if (!providerAcceptsClientInsurance || !constraints.canUseInsurance) {
+  if (!providerAcceptsClientInsurance || !clientSummary.canUseInsurance) {
     return getUninsuredProviderCost(provider)
   }
   return 0
